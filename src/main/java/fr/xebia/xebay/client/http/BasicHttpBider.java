@@ -6,6 +6,7 @@ import fr.xebia.xebay.dto.UserInfo;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -13,6 +14,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 
 public class BasicHttpBider {
@@ -72,19 +74,35 @@ public class BasicHttpBider {
         double curValue = currentBidOffer.getCurrentValue();
         double increment = curValue + curValue * 10 / 100 ;
 
-        return bidForm(currentBidOffer.getItemName(), curValue, increment);
-
+        try {
+            return bidForm(currentBidOffer.getItemName(), curValue, increment);
+        } catch (WebApplicationException e) {
+            //no bid
+            log.info(e.getMessage());
+            return currentBidOffer;
+        }
     }
 
-    private BidOfferInfo bidForm(String name, double curValue, double increment) {
+    private BidOfferInfo bidForm(String name, double curValue, double increment) throws WebApplicationException{
         Form form = new Form();
         form.param("name", name);
         form.param("value", String.valueOf(curValue));
         form.param("increment", String.valueOf(increment));
 
+
+        Response response = targetBid.path("/bid").request()
+                .header(HttpHeaders.AUTHORIZATION, key)
+                .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        if(response.getStatus() != 200){
+            throw new WebApplicationException(response.readEntity(String.class).toString());
+        }
+        return response.readEntity(BidOfferInfo.class);
+
+/*
         return targetBid.path("/bid").request()
                 .header(HttpHeaders.AUTHORIZATION, key)
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), BidOfferInfo.class);
+*/
     }
 
     private boolean hasMonney() {
