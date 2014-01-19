@@ -1,4 +1,4 @@
-package fr.xebia.xebay;
+package fr.xebia.xebay.client;
 
 import com.google.gson.Gson;
 

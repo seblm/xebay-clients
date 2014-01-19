@@ -1,13 +1,9 @@
-package fr.xebia.xebay;
+package fr.xebia.xebay.client;
 
-import com.google.gson.Gson;
+import fr.xebia.xebay.client.http.RestBidder;
 
-import javax.websocket.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
+import javax.websocket.DeploymentException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 public class Bidder {
