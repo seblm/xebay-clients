@@ -28,8 +28,12 @@ public class BasicHttpBider {
 
     public static void main(String[] args) {
         BasicHttpBider bidClient = new BasicHttpBider();
-        bidClient.startBidAuto();
-
+        try {
+            bidClient.startBidAuto();
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            log.info(e.toString());
+        }
     }
 
 
@@ -49,7 +53,9 @@ public class BasicHttpBider {
     private void startBidAuto() {
         int i = 0;
         while(i < 30){
+
             bid();
+
             i++;
             try {
                 Thread.sleep(1000);
@@ -74,13 +80,7 @@ public class BasicHttpBider {
         double curValue = currentBidOffer.getCurrentValue();
         double increment = curValue + curValue * 10 / 100 ;
 
-        try {
-            return bidForm(currentBidOffer.getItemName(), curValue, increment);
-        } catch (WebApplicationException e) {
-            //no bid
-            log.info(e.getMessage());
-            return currentBidOffer;
-        }
+        return bidForm(currentBidOffer.getItemName(), curValue, increment);
     }
 
     private BidOfferInfo bidForm(String name, double curValue, double increment) throws WebApplicationException{
@@ -94,15 +94,9 @@ public class BasicHttpBider {
                 .header(HttpHeaders.AUTHORIZATION, key)
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
         if(response.getStatus() != 200){
-            throw new WebApplicationException(response.readEntity(String.class).toString());
+            throw new RuntimeException("Status " + response.getStatus() + " - " + response.readEntity(String.class).toString());
         }
         return response.readEntity(BidOfferInfo.class);
-
-/*
-        return targetBid.path("/bid").request()
-                .header(HttpHeaders.AUTHORIZATION, key)
-                .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), BidOfferInfo.class);
-*/
     }
 
     private boolean hasMonney() {
