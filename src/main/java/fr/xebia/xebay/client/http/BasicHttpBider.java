@@ -4,9 +4,9 @@ package fr.xebia.xebay.client.http;
 import fr.xebia.xebay.dto.BidOfferInfo;
 import fr.xebia.xebay.dto.UserInfo;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -15,50 +15,46 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.logging.Logger;
 
 public class BasicHttpBider {
 
-    private static final Logger log = Logger.getLogger("BidClient");
+    private static final Logger log = LoggerFactory.getLogger("BidClient");
 
     private Client client;
     private WebTarget targetBid;
-    private String key ;
+    //TODO your api key
+    private String apiKey = "XPD3993XyOVs5FSo";
+    private String email;
+    private double balance;
 
 
     public static void main(String[] args) {
-        BasicHttpBider bidClient = new BasicHttpBider();
-        try {
-            bidClient.startBidAuto();
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            log.info(e.toString());
+        String userKey = null;
+        if(args.length == 1){
+            userKey = args[0];
         }
+        BasicHttpBider bidClient = new BasicHttpBider(userKey);
+
+        bidClient.startBidAuto();
     }
 
 
-    public BasicHttpBider() {
-        client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
 
-        try {
-            key = client.target("http://localhost:8080/rest/users/register").queryParam("email", "aaa@eee.com").request().get(String.class);
-        } catch (ForbiddenException e) {
-            //TODO already register  and no more key --> login/logout
-            e.printStackTrace();
+    public BasicHttpBider(String userApiKey) {
+        if(null != userApiKey){
+            apiKey = userApiKey;
         }
-
+        client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
         targetBid = client.target("http://localhost:8080/rest/bidEngine");
+
+        initUserInfo();
     }
 
     private void startBidAuto() {
-        int i = 0;
-        while(i < 30){
-
-            bid();
-
-            i++;
+        while (userCanBid()) {
+            bidIfNotMine();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(20000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -67,23 +63,34 @@ public class BasicHttpBider {
     }
 
 
-
-    private BidOfferInfo getBidOffer(){
-        return targetBid.request().get(BidOfferInfo.class);
+    private BidOfferInfo getCurrentBidOffer() {
+        //return targetBid.path("/current").request().get(BidOfferInfo.class);
+        Response response = targetBid.path("/current").request().get(Response.class);
+        return response.readEntity(BidOfferInfo.class);
     }
 
-    private BidOfferInfo bid(){
-        BidOfferInfo currentBidOffer = getBidOffer();
+    private void bidIfNotMine() {
+        BidOfferInfo currentBidOffer = getCurrentBidOffer();
 
-        log.info("Current Bid Offer : " + currentBidOffer.toString());
+        if(email.equals(currentBidOffer.getFutureBuyerEmail())){
+            return;
+        }
+
+        log.debug("Current Bid Offer : " + currentBidOffer.toString());
 
         double curValue = currentBidOffer.getCurrentValue();
-        double increment = curValue + curValue * 10 / 100 ;
+        double increment = curValue + (curValue * 10 / 100) ;
 
-        return bidForm(currentBidOffer.getItemName(), curValue, increment);
+        try {
+            BidOfferInfo afterBid = bidForm(currentBidOffer.getItemName(), curValue, increment);
+            log.debug("After Bidding : " + afterBid.toString());
+
+        } catch (Exception e) {
+            log.info("Couldn't bid'" + e.getMessage());
+        }
     }
 
-    private BidOfferInfo bidForm(String name, double curValue, double increment) throws WebApplicationException{
+    private BidOfferInfo bidForm(String name, double curValue, double increment){
         Form form = new Form();
         form.param("name", name);
         form.param("value", String.valueOf(curValue));
@@ -91,19 +98,34 @@ public class BasicHttpBider {
 
 
         Response response = targetBid.path("/bid").request()
-                .header(HttpHeaders.AUTHORIZATION, key)
+                .header(HttpHeaders.AUTHORIZATION, apiKey)
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
-        if(response.getStatus() != 200){
+        if (response.getStatus() != 200) {
             throw new RuntimeException("Status " + response.getStatus() + " - " + response.readEntity(String.class).toString());
         }
         return response.readEntity(BidOfferInfo.class);
     }
 
-    private boolean hasMonney() {
-        UserInfo userInfo = client.target("http://localhost:8080/rest/users/info").queryParam("email", "aaa@eee.com").request().get(UserInfo.class);
-        log.info("User info : " + userInfo.toString());
+    private boolean userCanBid() {
+        UserInfo userInfo = getUserInfo();
 
         return userInfo.hasMonney();
+    }
+
+    private UserInfo getUserInfo() {
+        UserInfo userInfo = client.target("http://localhost:8080/rest/users/info")
+                                  .queryParam("email", "aaa@eee.com")
+                                  .request()
+                                  .header(HttpHeaders.AUTHORIZATION, apiKey)
+                                  .get(UserInfo.class);
+        log.info("User info : " + userInfo.toString());
+        return userInfo;
+    }
+
+    private void initUserInfo() {
+        UserInfo userInfo = getUserInfo();
+        this.email = userInfo.getEmail();
+        this.balance = userInfo.getBalance();
     }
 
 }
