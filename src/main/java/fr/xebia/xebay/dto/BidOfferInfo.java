@@ -7,44 +7,57 @@ public class BidOfferInfo {
 
     private String itemName;
     private double currentValue;
-    private String buyerEmail;
+    private double initialValue;
+    private String ownerEmail;
+    private String futureBuyerEmail;
     private int timeToLive;
 
     public BidOfferInfo() {
     }
 
-    public BidOfferInfo(String itemName, double currentValue, String buyerEmail, int timeToLive) {
+    public BidOfferInfo(String itemName, double currentValue, double initialValue, String ownerEmail, String futurBuyerEmail, int timeToLive) {
         this.itemName = itemName;
-        this.currentValue =currentValue;
-        this.buyerEmail = buyerEmail;
+        this.currentValue = currentValue;
+        this.initialValue = initialValue;
+        this.ownerEmail = ownerEmail;
+        this.futureBuyerEmail = futurBuyerEmail;
         this.timeToLive = timeToLive;
     }
-
-
 
     public double getCurrentValue() {
         return currentValue;
     }
 
-    public void setTimeToLive(int timeToLive) {
-        this.timeToLive = timeToLive;
-    }
 
     public int getTimeToLive() {
         return timeToLive;
     }
 
-    @Override
-    public String toString() {
-        return "BidOffer{" +
-                "item=" + itemName +
-                ", currentValue=" + currentValue +
-                ", buyer=" + (buyerEmail != null ? buyerEmail : "") +
-                ", timeToLive=" + timeToLive +
-                '}';
-    }
-
     public String getItemName() {
         return itemName;
+    }
+
+    public double getInitialValue() {
+        return initialValue;
+    }
+
+    public String getOwnerEmail() {
+        return ownerEmail;
+    }
+
+    public String getFutureBuyerEmail() {
+        return futureBuyerEmail;
+    }
+
+    @Override
+    public String toString() {
+        return "BidOfferInfo{" +
+                "itemName='" + itemName + '\'' +
+                ", currentValue=" + currentValue +
+                ", initialValue=" + initialValue +
+                ", ownerEmail='" + ownerEmail + '\'' +
+                ", futurBuyerEmail='" + futureBuyerEmail + '\'' +
+                ", timeToLive=" + timeToLive +
+                '}';
     }
 }
