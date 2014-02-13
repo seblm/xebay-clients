@@ -1,6 +1,5 @@
 package fr.xebia.xebay.client.http;
 
-
 import fr.xebia.xebay.dto.BidOfferInfo;
 import fr.xebia.xebay.dto.UserInfo;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -20,13 +19,12 @@ public class BasicHttpBider {
 
     private static final Logger log = LoggerFactory.getLogger("BidClient");
 
-    private Client client;
-    private WebTarget targetBid;
     //TODO your api key
     private String apiKey = "XPD3993XyOVs5FSo";
-    private String email;
-    private double balance;
+    private final Client client;
+    private final WebTarget targetBid;
 
+    private String name;
 
     public static void main(String[] args) {
         String userKey = null;
@@ -38,14 +36,12 @@ public class BasicHttpBider {
         bidClient.startBidAuto();
     }
 
-
-
     public BasicHttpBider(String userApiKey) {
         if(null != userApiKey){
             apiKey = userApiKey;
         }
-        client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
-        targetBid = client.target("http://localhost:8080/rest/bidEngine");
+        this.client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
+        this.targetBid = client.target("http://localhost:8080/rest/bidEngine");
 
         initUserInfo();
     }
@@ -62,9 +58,7 @@ public class BasicHttpBider {
         }
     }
 
-
     private BidOfferInfo getCurrentBidOffer() {
-        //return targetBid.path("/current").request().get(BidOfferInfo.class);
         Response response = targetBid.path("/current").request().get(Response.class);
         return response.readEntity(BidOfferInfo.class);
     }
@@ -72,14 +66,14 @@ public class BasicHttpBider {
     private void bidIfNotMine() {
         BidOfferInfo currentBidOffer = getCurrentBidOffer();
 
-        if(email.equals(currentBidOffer.getFutureBuyerEmail())){
+        if (name.equals(currentBidOffer.getFutureBuyerName())) {
             return;
         }
 
         log.debug("Current Bid Offer : " + currentBidOffer.toString());
 
         double curValue = currentBidOffer.getCurrentValue();
-        double increment = curValue + (curValue * 10 / 100) ;
+        double increment = curValue + (curValue * 10 / 100);
 
         try {
             BidOfferInfo afterBid = bidForm(currentBidOffer.getItemName(), curValue, increment);
@@ -90,12 +84,11 @@ public class BasicHttpBider {
         }
     }
 
-    private BidOfferInfo bidForm(String name, double curValue, double increment){
+    private BidOfferInfo bidForm(String name, double curValue, double increment) {
         Form form = new Form();
         form.param("name", name);
         form.param("value", String.valueOf(curValue));
         form.param("increment", String.valueOf(increment));
-
 
         Response response = targetBid.path("/bid").request()
                 .header(HttpHeaders.AUTHORIZATION, apiKey)
@@ -114,18 +107,15 @@ public class BasicHttpBider {
 
     private UserInfo getUserInfo() {
         UserInfo userInfo = client.target("http://localhost:8080/rest/users/info")
-                                  .queryParam("email", "aaa@eee.com")
-                                  .request()
-                                  .header(HttpHeaders.AUTHORIZATION, apiKey)
-                                  .get(UserInfo.class);
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, apiKey)
+                .get(UserInfo.class);
         log.info("User info : " + userInfo.toString());
         return userInfo;
     }
 
     private void initUserInfo() {
         UserInfo userInfo = getUserInfo();
-        this.email = userInfo.getEmail();
-        this.balance = userInfo.getBalance();
+        this.name = userInfo.getName();
     }
-
 }
