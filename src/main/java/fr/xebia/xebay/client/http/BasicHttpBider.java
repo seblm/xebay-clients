@@ -19,27 +19,28 @@ public class BasicHttpBider {
 
     private static final Logger log = LoggerFactory.getLogger("BidClient");
 
-    //TODO your api key
-    private String apiKey = "XPD3993XyOVs5FSo";
+    private final String apiKey;
     private final Client client;
     private final WebTarget targetBid;
 
     private String name;
 
     public static void main(String[] args) {
-        String userKey = null;
-        if(args.length == 1){
-            userKey = args[0];
+        String apiKey = null;
+        if (args.length == 1) {
+            apiKey = args[0];
+        } else {
+            System.err.println("Error: no api key has been provided.\n" +
+                    "Usage: java " + BasicHttpBider.class.getName() + " API_KEY");
+            System.exit(1);
         }
-        BasicHttpBider bidClient = new BasicHttpBider(userKey);
+        BasicHttpBider bidClient = new BasicHttpBider(apiKey);
 
         bidClient.startBidAuto();
     }
 
-    public BasicHttpBider(String userApiKey) {
-        if(null != userApiKey){
-            apiKey = userApiKey;
-        }
+    public BasicHttpBider(String apiKey) {
+        this.apiKey = apiKey;
         this.client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
         this.targetBid = client.target("http://localhost:8080/rest/bidEngine");
 
@@ -94,7 +95,7 @@ public class BasicHttpBider {
                 .header(HttpHeaders.AUTHORIZATION, apiKey)
                 .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
         if (response.getStatus() != 200) {
-            throw new RuntimeException("Status " + response.getStatus() + " - " + response.readEntity(String.class).toString());
+            throw new RuntimeException("Status " + response.getStatus() + " - " + response.readEntity(String.class));
         }
         return response.readEntity(BidOfferInfo.class);
     }
