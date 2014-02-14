@@ -1,37 +1,90 @@
 package fr.xebia.xebay.client.http;
 
 import com.google.gson.Gson;
+import fr.xebia.xebay.dto.BidOfferInfo;
+import fr.xebia.xebay.dto.ItemOffer;
+import fr.xebia.xebay.dto.UserInfo;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.net.URI;
-import java.net.URISyntaxException;
+import javax.ws.rs.core.Response;
 
 public class RestBidder {
+    private static final Logger log = LoggerFactory.getLogger("RestBidder");
 
-  static final Gson gson = new Gson();
 
-  final WebTarget webTarget;
+    static final Gson gson = new Gson();
 
-  public RestBidder(String target) throws URISyntaxException {
+    private final WebTarget webTarget;
+    private final Client client;
+    private final String apiKey;
+    private final String target;
 
-    URI targetURI = new URI(target);
-    Client client = ClientBuilder.newClient();
-    webTarget = client.target(targetURI);
-  }
 
-  public String register(String email) {
-    return webTarget.path("register").queryParam("email", email).request().get(String.class);
-  }
+    public RestBidder(String target, String apiKey){
 
-  // TODO public void send(Bid bid);
-  public void getCurrentOffer(String key) {
-    webTarget.request().header(HttpHeaders.AUTHORIZATION, key).accept(MediaType.APPLICATION_JSON).get();
-  }
+        this.target = target;
+        this.client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
 
-  // TODO public void sell(Item item);
+        this.webTarget = client.target(this.target).path("/bidEngine");
+        this.apiKey = apiKey;
+
+    }
+
+    public String register(String email) {
+        return webTarget.path("register").queryParam("email", email).request().get(String.class);
+    }
+
+    public UserInfo getUserInfo() {
+
+        UserInfo userInfo = client.target(target).path("/users/info")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, apiKey)
+                .get(UserInfo.class);
+        log.info("User info : " + userInfo.toString());
+        return userInfo;
+    }
+
+    public BidOfferInfo getCurrentOffer() {
+        return webTarget.path("/current").request().get(BidOfferInfo.class);
+    }
+
+    public BidOfferInfo bidForm(String name, double curValue, double increment) {
+        Form form = new Form();
+        form.param("name", name);
+        form.param("value", String.valueOf(curValue));
+        form.param("increment", String.valueOf(increment));
+
+        Response response = post("/bid", Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+        return response.readEntity(BidOfferInfo.class);
+    }
+
+
+    public void sell(ItemOffer item) {
+        log.debug("Selling an item ");
+        post("/offer", Entity.entity(item, MediaType.APPLICATION_JSON_TYPE));
+        log.debug("item " + item.getName() + " was sent for sale ");
+    }
+
+
+    private Response post(String resourcePath, Entity<Object> entity){
+        Response response = webTarget.path(resourcePath).request()
+                .header(HttpHeaders.AUTHORIZATION, apiKey)
+                .post(entity, Response.class);
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Status " + response.getStatus() + " - " + response.readEntity(String.class));
+        }
+        return response;
+    }
+
 
 }

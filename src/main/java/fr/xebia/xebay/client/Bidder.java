@@ -14,7 +14,7 @@ public class Bidder {
 
   public Bidder() throws IOException, DeploymentException, URISyntaxException {
 
-    restBidder = new RestBidder("http://localhost:8080/rest/");
+    restBidder = new RestBidder("http://localhost:8080/rest/", "falseApiKey");
 
     webSocketBidder = new WebSocketBidder("http://localhost:8080/ws/");
   }
