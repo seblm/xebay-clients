@@ -1,12 +1,17 @@
 package fr.xebia.xebay.dto;
 
+import java.util.Set;
+
 public class UserInfo {
     private String name;
     private double balance;
+    private Set<ItemOffer> items;
 
-    public UserInfo(String name, double balance) {
+
+    public UserInfo(String name, double balance, Set<ItemOffer> items) {
         this.name = name;
         this.balance = balance;
+        this.items = items;
     }
 
     public UserInfo() {
@@ -20,12 +25,24 @@ public class UserInfo {
         return balance;
     }
 
+    public Set<ItemOffer> getItems() {
+        return items;
+    }
+
     public boolean hasMonney() {
         return balance > 0;
     }
 
     @Override
     public String toString() {
-        return "Email " + name + "Balance " + balance;
+        StringBuilder stringBuilder = new StringBuilder();
+        for(ItemOffer item : items){
+            stringBuilder.append(item.toString());
+        }
+        return "UserInfo{" +
+                "name='" + name + '\'' +
+                ", balance=" + balance +
+                ", items=" + stringBuilder.toString() +
+                '}';
     }
 }
