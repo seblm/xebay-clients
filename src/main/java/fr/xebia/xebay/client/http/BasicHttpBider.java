@@ -78,7 +78,7 @@ public class BasicHttpBider {
         double increment = curValue * 10 / 100;
 
         try {
-            BidOfferInfo afterBid = restBidder.bidForm(currentBidOffer.getItemName(), curValue, increment);
+            BidOfferInfo afterBid = restBidder.bidForm(currentBidOffer.getItemName(), curValue + increment);
             log.debug("After Bidding : " + afterBid.toString());
 
         } catch (Exception e) {

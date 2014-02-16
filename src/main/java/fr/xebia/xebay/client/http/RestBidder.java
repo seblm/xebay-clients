@@ -57,11 +57,10 @@ public class RestBidder {
         return webTarget.path("/current").request().get(BidOfferInfo.class);
     }
 
-    public BidOfferInfo bidForm(String name, double curValue, double increment) {
+    public BidOfferInfo bidForm(String name, double newValue) {
         Form form = new Form();
         form.param("name", name);
-        form.param("value", String.valueOf(curValue));
-        form.param("increment", String.valueOf(increment));
+        form.param("value", String.valueOf(newValue));
 
         Response response = post("/bid", Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
