@@ -1,6 +1,5 @@
 package fr.xebia.xebay.client.http;
 
-import com.google.gson.Gson;
 import fr.xebia.xebay.dto.BidOfferInfo;
 import fr.xebia.xebay.dto.ItemOffer;
 import fr.xebia.xebay.dto.UserInfo;
@@ -20,16 +19,13 @@ import javax.ws.rs.core.Response;
 public class RestBidder {
     private static final Logger log = LoggerFactory.getLogger("RestBidder");
 
-
-    static final Gson gson = new Gson();
-
     private final WebTarget webTarget;
     private final Client client;
     private final String apiKey;
     private final String target;
 
 
-    public RestBidder(String target, String apiKey){
+    public RestBidder(String target, String apiKey) {
 
         this.target = target;
         this.client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
@@ -75,7 +71,7 @@ public class RestBidder {
     }
 
 
-    private Response post(String resourcePath, Entity<Object> entity){
+    private Response post(String resourcePath, Entity<Object> entity) {
         Response response = webTarget.path(resourcePath).request()
                 .header(HttpHeaders.AUTHORIZATION, apiKey)
                 .post(entity, Response.class);
