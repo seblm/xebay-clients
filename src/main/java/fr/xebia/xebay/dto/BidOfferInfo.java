@@ -2,6 +2,7 @@ package fr.xebia.xebay.dto;
 
 public class BidOfferInfo {
     private String itemName;
+    private String itemCategory;
     private double currentValue;
     private double initialValue;
     private String ownerName;
@@ -11,8 +12,9 @@ public class BidOfferInfo {
     public BidOfferInfo() {
     }
 
-    public BidOfferInfo(String itemName, double currentValue, double initialValue, String ownerName, String futurBuyerEmail, int timeToLive) {
+    public BidOfferInfo(String itemName, String itemCategory, double currentValue, double initialValue, String ownerName, String futurBuyerEmail, int timeToLive) {
         this.itemName = itemName;
+        this.itemCategory = itemCategory;
         this.currentValue = currentValue;
         this.initialValue = initialValue;
         this.ownerName = ownerName;
@@ -32,6 +34,10 @@ public class BidOfferInfo {
         return itemName;
     }
 
+    public String getItemCategory() {
+        return itemCategory;
+    }
+
     public double getInitialValue() {
         return initialValue;
     }
@@ -48,6 +54,7 @@ public class BidOfferInfo {
     public String toString() {
         return "BidOfferInfo{" +
                 "itemName='" + itemName + '\'' +
+                ", itemCategory='" + itemCategory + '\'' +
                 ", currentValue=" + currentValue +
                 ", initialValue=" + initialValue +
                 ", ownerName='" + ownerName + '\'' +

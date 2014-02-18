@@ -40,7 +40,7 @@ public class BasicHttpBider {
 
             //user must sell item to gain money and bid again
             ItemOffer ownedItem = getRandomItem();
-            restBidder.sell(new ItemOffer(ownedItem.getName(), 100.0));
+            restBidder.sell(new ItemOffer(ownedItem.getCategory(), ownedItem.getName(), 100.0));
 
             while (!hasEnoughMoney()) {
                 //waiting he's got sale money !
