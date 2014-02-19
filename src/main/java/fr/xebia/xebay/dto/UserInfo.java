@@ -5,10 +5,10 @@ import java.util.Set;
 public class UserInfo {
     private String name;
     private double balance;
-    private Set<ItemOffer> items;
+    private Set<Item> items;
 
 
-    public UserInfo(String name, double balance, Set<ItemOffer> items) {
+    public UserInfo(String name, double balance, Set<Item> items) {
         this.name = name;
         this.balance = balance;
         this.items = items;
@@ -25,7 +25,7 @@ public class UserInfo {
         return balance;
     }
 
-    public Set<ItemOffer> getItems() {
+    public Set<Item> getItems() {
         return items;
     }
 
@@ -36,7 +36,7 @@ public class UserInfo {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for(ItemOffer item : items){
+        for(Item item : items){
             stringBuilder.append(item.toString());
         }
         return "UserInfo{" +

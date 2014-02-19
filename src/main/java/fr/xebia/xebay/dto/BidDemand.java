@@ -1,16 +1,15 @@
 package fr.xebia.xebay.dto;
 
-public class BidParam {
-
+public class BidDemand {
     private String itemName;
     private double value;
 
-    public BidParam() {
+    public BidDemand() {
     }
 
-    public BidParam(String itemName, double curValue, double increment) {
+    public BidDemand(String itemName, double value) {
         this.itemName = itemName;
-        this.value = curValue;
+        this.value = value;
     }
 
     public String getItemName() {
@@ -20,5 +19,4 @@ public class BidParam {
     public double getValue() {
         return value;
     }
-
 }

@@ -1,7 +1,8 @@
 package fr.xebia.xebay.client.http;
 
-import fr.xebia.xebay.dto.BidOfferInfo;
-import fr.xebia.xebay.dto.ItemOffer;
+import fr.xebia.xebay.dto.BidDemand;
+import fr.xebia.xebay.dto.BidOffer;
+import fr.xebia.xebay.dto.Item;
 import fr.xebia.xebay.dto.UserInfo;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
@@ -49,24 +50,24 @@ public class RestBidder {
         return userInfo;
     }
 
-    public BidOfferInfo getCurrentOffer() {
-        return webTarget.path("/current").request().get(BidOfferInfo.class);
+    public BidOffer getCurrentOffer() {
+        return webTarget.path("/current").request().get(BidOffer.class);
     }
 
-    public BidOfferInfo bidForm(String name, double newValue) {
+    public BidOffer bidForm(String name, double newValue) {
         Form form = new Form();
         form.param("name", name);
         form.param("value", String.valueOf(newValue));
 
         Response response = post("/bid", Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
-        return response.readEntity(BidOfferInfo.class);
+        return response.readEntity(BidOffer.class);
     }
 
 
-    public void sell(ItemOffer item) {
+    public void sell(Item item) {
         log.debug("Selling an item ");
-        post("/offer", Entity.entity(item, MediaType.APPLICATION_JSON_TYPE));
+        post("/offer", Entity.entity(new BidDemand(item.getName(), item.getValue()), MediaType.APPLICATION_JSON_TYPE));
         log.debug("item " + item.getName() + " was sent for sale ");
     }
 

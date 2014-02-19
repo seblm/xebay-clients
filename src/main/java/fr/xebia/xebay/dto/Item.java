@@ -1,14 +1,16 @@
 package fr.xebia.xebay.dto;
 
-public class ItemOffer {
+import static java.lang.String.format;
+
+public class Item {
     private String name;
     private String category;
     private double value;
 
-    public ItemOffer() {
+    public Item() {
     }
 
-    public ItemOffer(String category, String name, double value) {
+    public Item(String category, String name, double value) {
         this.name = name;
         this.category = category;
         this.value = value;
@@ -24,5 +26,10 @@ public class ItemOffer {
 
     public double getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return format("[%s] %s", category, name);
     }
 }

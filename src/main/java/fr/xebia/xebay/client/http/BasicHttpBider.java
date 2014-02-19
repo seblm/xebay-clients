@@ -1,7 +1,7 @@
 package fr.xebia.xebay.client.http;
 
-import fr.xebia.xebay.dto.BidOfferInfo;
-import fr.xebia.xebay.dto.ItemOffer;
+import fr.xebia.xebay.dto.BidOffer;
+import fr.xebia.xebay.dto.Item;
 import fr.xebia.xebay.dto.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +39,8 @@ public class BasicHttpBider {
             bidAsYouCan();
 
             //user must sell item to gain money and bid again
-            ItemOffer ownedItem = getRandomItem();
-            restBidder.sell(new ItemOffer(ownedItem.getCategory(), ownedItem.getName(), 100.0));
+            Item ownedItem = getRandomItem();
+            restBidder.sell(new Item(ownedItem.getCategory(), ownedItem.getName(), 100.0));
 
             while (!hasEnoughMoney()) {
                 //waiting he's got sale money !
@@ -66,19 +66,19 @@ public class BasicHttpBider {
 
 
     private void bidIfNotMine() {
-        BidOfferInfo currentBidOffer = restBidder.getCurrentOffer();
+        BidOffer currentBidOffer = restBidder.getCurrentOffer();
 
-        if (userInfo.getName().equals(currentBidOffer.getFutureBuyerName())) {
+        if (userInfo.getName().equals(currentBidOffer.getUserName())) {
             return;
         }
 
         log.debug("Current Bid Offer : " + currentBidOffer.toString());
 
-        double curValue = currentBidOffer.getCurrentValue();
+        double curValue = currentBidOffer.getItem().getValue();
         double increment = curValue * 10 / 100;
 
         try {
-            BidOfferInfo afterBid = restBidder.bidForm(currentBidOffer.getItemName(), curValue + increment);
+            BidOffer afterBid = restBidder.bidForm(currentBidOffer.getItem().getName(), curValue + increment);
             log.debug("After Bidding : " + afterBid.toString());
 
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class BasicHttpBider {
     }
 
 
-    private ItemOffer getRandomItem() {
+    private Item getRandomItem() {
         return userInfo.getItems().stream()
                 .filter((item) -> item.getName().contains("an"))
                 .findAny().orElseThrow(() -> new RuntimeException("No Item to Sell !!!"));
