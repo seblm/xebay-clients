@@ -4,12 +4,14 @@ import java.util.Set;
 
 public class UserInfo {
     private String name;
+    private String avatarUrl;
     private double balance;
     private Set<Item> items;
 
 
-    public UserInfo(String name, double balance, Set<Item> items) {
+    public UserInfo(String name, String avatarUrl, double balance, Set<Item> items) {
         this.name = name;
+        this.avatarUrl = avatarUrl;
         this.balance = balance;
         this.items = items;
     }
@@ -44,5 +46,9 @@ public class UserInfo {
                 ", balance=" + balance +
                 ", items=" + stringBuilder.toString() +
                 '}';
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 }
