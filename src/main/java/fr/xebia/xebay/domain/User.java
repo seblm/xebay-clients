@@ -1,26 +1,33 @@
-package fr.xebia.xebay.dto;
+package fr.xebia.xebay.domain;
+
+import fr.xebia.xebay.dto.Item;
 
 import java.util.Set;
 
-public class UserInfo {
+public class User {
     private String name;
+    private String key;
     private String avatarUrl;
     private double balance;
     private Set<Item> items;
 
-
-    public UserInfo(String name, String avatarUrl, double balance, Set<Item> items) {
+    public User(String name, String key, String avatarUrl, double balance, Set<Item> items) {
         this.name = name;
+        this.key = key;
         this.avatarUrl = avatarUrl;
         this.balance = balance;
         this.items = items;
     }
 
-    public UserInfo() {
+    public User() {
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public double getBalance() {
@@ -31,18 +38,19 @@ public class UserInfo {
         return items;
     }
 
-    public boolean hasMonney() {
+    public boolean hasMoney() {
         return balance > 0;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for(Item item : items){
+        for (Item item : items) {
             stringBuilder.append(item.toString());
         }
-        return "UserInfo{" +
+        return "User{" +
                 "name='" + name + '\'' +
+                ", key='" + key + '\'' +
                 ", balance=" + balance +
                 ", items=" + stringBuilder.toString() +
                 '}';

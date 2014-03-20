@@ -1,8 +1,8 @@
 package fr.xebia.xebay.client.http;
 
-import fr.xebia.xebay.dto.BidOffer;
+import fr.xebia.xebay.domain.BidOffer;
+import fr.xebia.xebay.domain.User;
 import fr.xebia.xebay.dto.Item;
-import fr.xebia.xebay.dto.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +12,9 @@ public class BasicHttpBider {
 
     private RestBidder restBidder;
 
-    private UserInfo userInfo;
+    private User user;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         String apiKey = null;
         if (args.length == 1) {
             apiKey = args[0];
@@ -27,11 +27,10 @@ public class BasicHttpBider {
         new BasicHttpBider(apiKey).startBidAuto();
     }
 
-    public BasicHttpBider(String apiKey){
+    public BasicHttpBider(String apiKey) {
         restBidder = new RestBidder("http://localhost:8080/rest", apiKey);
 
-        this.userInfo = restBidder.getUserInfo();
-
+        this.user = restBidder.getUserInfo();
     }
 
     private void startBidAuto() {
@@ -68,7 +67,7 @@ public class BasicHttpBider {
     private void bidIfNotMine() {
         BidOffer currentBidOffer = restBidder.getCurrentOffer();
 
-        if (userInfo.getName().equals(currentBidOffer.getUserName())) {
+        if (user.getName().equals(currentBidOffer.getUserName())) {
             return;
         }
 
@@ -88,15 +87,15 @@ public class BasicHttpBider {
 
 
     private Item getRandomItem() {
-        return userInfo.getItems().stream()
+        return user.getItems().stream()
                 .filter((item) -> item.getName().contains("an"))
                 .findAny().orElseThrow(() -> new RuntimeException("No Item to Sell !!!"));
     }
 
 
     private boolean hasEnoughMoney() {
-        this.userInfo = restBidder.getUserInfo();
-        return userInfo.getBalance() > 20;
+        this.user = restBidder.getUserInfo();
+        return user.getBalance() > 20;
     }
 
 }

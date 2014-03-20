@@ -1,9 +1,9 @@
 package fr.xebia.xebay.client.http;
 
+import fr.xebia.xebay.domain.BidOffer;
+import fr.xebia.xebay.domain.User;
 import fr.xebia.xebay.dto.BidDemand;
-import fr.xebia.xebay.dto.BidOffer;
 import fr.xebia.xebay.dto.Item;
-import fr.xebia.xebay.dto.UserInfo;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +40,14 @@ public class RestBidder {
         return webTarget.path("register").queryParam("email", email).request().get(String.class);
     }
 
-    public UserInfo getUserInfo() {
+    public User getUserInfo() {
 
-        UserInfo userInfo = client.target(target).path("/users/info")
+        User user = client.target(target).path("/users/info")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, apiKey)
-                .get(UserInfo.class);
-        log.info("User info : " + userInfo.toString());
-        return userInfo;
+                .get(User.class);
+        log.info("User info : " + user.toString());
+        return user;
     }
 
     public BidOffer getCurrentOffer() {
