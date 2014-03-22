@@ -1,7 +1,5 @@
 package fr.xebia.xebay.domain;
 
-import fr.xebia.xebay.dto.Item;
-
 public class BidOffer {
     private Item item;
     private long timeToLive;

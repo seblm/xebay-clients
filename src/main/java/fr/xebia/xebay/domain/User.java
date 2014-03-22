@@ -1,7 +1,5 @@
 package fr.xebia.xebay.domain;
 
-import fr.xebia.xebay.dto.Item;
-
 import java.util.Set;
 
 public class User {
@@ -36,10 +34,6 @@ public class User {
 
     public Set<Item> getItems() {
         return items;
-    }
-
-    public boolean hasMoney() {
-        return balance > 0;
     }
 
     @Override

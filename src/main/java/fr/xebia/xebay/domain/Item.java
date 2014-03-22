@@ -1,4 +1,4 @@
-package fr.xebia.xebay.dto;
+package fr.xebia.xebay.domain;
 
 import static java.lang.String.format;
 
