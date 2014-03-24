@@ -113,4 +113,24 @@ public class RestBidderTest {
         assertThat(currentOffer.getItem()).isNotNull();
         assertThat(currentOffer.getTimeToLive()).isGreaterThanOrEqualTo(0);
     }
+
+    @Test
+    public void should_bid() {
+        String apiKey = null;
+        try {
+            apiKey = restBidder.register("email@provider.net");
+            BidOffer currentBidOffer = restBidder.getCurrentOffer();
+            double firstValue = currentBidOffer.getItem().getValue();
+            double newValue = firstValue * 1.1;
+
+            BidOffer bidOffer = restBidder.bidForm(currentBidOffer.getItem().getName(), newValue, apiKey);
+
+            assertThat(bidOffer.getBidder()).isEqualTo("email@provider.net");
+            assertThat(bidOffer.getItem().getValue()).isEqualTo(newValue);
+        } finally {
+            if (apiKey != null) {
+                restBidder.unregister(apiKey);
+            }
+        }
+    }
 }
