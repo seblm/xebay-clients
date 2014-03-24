@@ -5,19 +5,19 @@ import fr.xebia.xebay.dto.Item;
 public class BidOffer {
     private Item item;
     private long timeToLive;
-    private String userName;
-    private String avatarUrl;
+    private String owner;
+    private String bidder;
     private boolean expired;
 
     public BidOffer() {
     }
 
-    public BidOffer(String itemCategory, String itemName, double itemValue, String userName, int timeToLive, String avatarUrl, boolean expired) {
-        this.item = new Item(itemCategory, itemName, itemValue);
-        this.userName = userName;
+    public BidOffer(String itemCategory, String itemName, double value, long timeToLive, String owner, String bidder, boolean expired) {
+        this.item = new Item(itemCategory, itemName, value);
         this.timeToLive = timeToLive;
-        this.avatarUrl = avatarUrl;
-        this.expired = this.expired;
+        this.owner = owner;
+        this.bidder = bidder;
+        this.expired = expired;
     }
 
     public Item getItem() {
@@ -28,12 +28,12 @@ public class BidOffer {
         return timeToLive;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getOwner() {
+        return owner;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public String getBidder() {
+        return bidder;
     }
 
     public boolean isExpired() {
@@ -45,7 +45,7 @@ public class BidOffer {
         return "BidOffer{" +
                 "item=" + item +
                 ", timeToLive=" + timeToLive +
-                ", userName='" + userName + '\'' +
+                ", owner='" + owner + '\'' +
                 ", expired=" + expired +
                 '}';
     }

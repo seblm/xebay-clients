@@ -67,7 +67,11 @@ public class BasicHttpBider {
     private void bidIfNotMine() {
         BidOffer currentBidOffer = restBidder.getCurrentOffer();
 
-        if (user.getName().equals(currentBidOffer.getUserName())) {
+        if (user.getName().equals(currentBidOffer.getOwner())) {
+            return;
+        }
+
+        if (user.getName().equals(currentBidOffer.getBidder())) {
             return;
         }
 
