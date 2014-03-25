@@ -1,10 +1,9 @@
 package fr.xebia.xebay.client.http;
 
 public class BasicHttpBider {
-    private RestBidder restBidder;
 
     public BasicHttpBider() {
-        restBidder = new RestBidder("http://localhost:8080/rest");
+        RestBidder restBidder = new RestBidder("http://localhost:8080/rest");
 
         while (true) {
             try {
