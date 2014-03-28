@@ -1,4 +1,4 @@
-package fr.xebia.xebay.client.http;
+package fr.xebia.xebay.client;
 
 import fr.xebia.xebay.domain.BidOffer;
 import fr.xebia.xebay.domain.PublicUser;
@@ -11,10 +11,8 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.Set;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
@@ -55,17 +53,13 @@ public class RestBidder {
                 .get(BidOffer.class);
     }
 
-    // TODO deprecated : use class
     public BidOffer bid(String name, double newValue, String apiKey) {
-        Form form = new Form();
-        form.param("name", name);
-        form.param("value", String.valueOf(newValue));
+        BidDemand bidDemand = new BidDemand(name, newValue);
 
         return client.target(this.target)
                 .path("/bidEngine").path("/bid").request()
                 .header(AUTHORIZATION, apiKey)
-                .post(Entity.<Object>entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class)
-                .readEntity(BidOffer.class);
+                .post(Entity.<Object>entity(bidDemand, MediaType.APPLICATION_JSON_TYPE), BidOffer.class);
     }
 
     public void sell(String itemName, double itemValue, String apiKey) {
