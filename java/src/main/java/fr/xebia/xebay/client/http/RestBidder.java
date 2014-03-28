@@ -55,7 +55,8 @@ public class RestBidder {
                 .get(BidOffer.class);
     }
 
-    public BidOffer bidForm(String name, double newValue, String apiKey) {
+    // TODO deprecated : use class
+    public BidOffer bid(String name, double newValue, String apiKey) {
         Form form = new Form();
         form.param("name", name);
         form.param("value", String.valueOf(newValue));
