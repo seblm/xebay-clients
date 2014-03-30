@@ -54,12 +54,8 @@ public class RestBidder {
         return webTarget.path("/current").request().get(BidOffer.class);
     }
 
-    public BidOffer bidForm(String name, double newValue) {
-        Form form = new Form();
-        form.param("name", name);
-        form.param("value", String.valueOf(newValue));
-
-        Response response = post("/bid", Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+    public BidOffer bid(String name, double newValue) {
+        Response response = post("/bid", Entity.entity(new BidDemand(name, newValue), MediaType.APPLICATION_JSON_TYPE));
 
         return response.readEntity(BidOffer.class);
     }
