@@ -3,7 +3,7 @@ package fr.xebia.xebay.client;
 import fr.xebia.xebay.domain.BidOffer;
 import fr.xebia.xebay.domain.PublicUser;
 import fr.xebia.xebay.domain.User;
-import fr.xebia.xebay.dto.BidDemand;
+import fr.xebia.xebay.domain.BidDemand;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

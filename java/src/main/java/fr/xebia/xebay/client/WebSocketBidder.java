@@ -1,20 +1,23 @@
 package fr.xebia.xebay.client;
 
+import fr.xebia.xebay.api.socket.BidEngineSocketCoder;
+import fr.xebia.xebay.api.socket.BidEngineSocketOutput;
+import fr.xebia.xebay.domain.BidOffer;
+
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.function.Consumer;
 
-@ClientEndpoint
+@ClientEndpoint(encoders = {BidEngineSocketCoder.class}, decoders = {BidEngineSocketCoder.class})
 public class WebSocketBidder {
 
     final Session session;
-    private final Consumer<String> callback;
+    private Consumer<BidOffer> newBidOfferCallback;
+    private Consumer<String> infoCallback;
 
-    public WebSocketBidder(String endpoint, Consumer<String> callback) throws IOException, DeploymentException, URISyntaxException {
-        this.callback = callback;
-
+    public WebSocketBidder(String endpoint) throws IOException, DeploymentException, URISyntaxException {
         URI endpointURI = new URI(endpoint);
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         session = container.connectToServer(this, endpointURI);
@@ -22,18 +25,28 @@ public class WebSocketBidder {
 
     @OnOpen
     public void onOpen() {
-        // TODO implement me
     }
 
     @OnMessage
-    public void onMessage(String message) {
-        callback.accept(message);
+    public void onMessage(BidEngineSocketOutput message) {
+        if (newBidOfferCallback != null && message.getBidOffer() != null) {
+            newBidOfferCallback.accept(message.getBidOffer());
+        }
+        if (infoCallback != null && message.getInfo() != null) {
+            infoCallback.accept(message.getInfo());
+        }
     }
 
     @OnError
     @OnClose
     public void onClose() {
-        // TODO implement me
     }
 
+    public void onBidOfferChange(Consumer<BidOffer> newBidOfferCallback) {
+        this.newBidOfferCallback = newBidOfferCallback;
+    }
+
+    public void onInfo(Consumer<String> infoCallback) {
+        this.infoCallback = infoCallback;
+    }
 }

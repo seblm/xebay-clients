@@ -44,6 +44,7 @@ public class BidOffer {
                 "item=" + item +
                 ", timeToLive=" + timeToLive +
                 ", owner='" + owner + '\'' +
+                ", bidder='" + bidder + '\'' +
                 ", expired=" + expired +
                 '}';
     }

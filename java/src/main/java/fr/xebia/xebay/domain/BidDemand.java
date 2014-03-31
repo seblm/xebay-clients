@@ -1,4 +1,4 @@
-package fr.xebia.xebay.dto;
+package fr.xebia.xebay.domain;
 
 public class BidDemand {
     private String itemName;
