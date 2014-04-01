@@ -2,8 +2,6 @@ package fr.xebia.xebay.client;
 
 import fr.xebia.xebay.domain.*;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;

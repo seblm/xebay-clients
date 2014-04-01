@@ -1,5 +1,6 @@
 package fr.xebia.xebay.client;
 
+import fr.xebia.xebay.Consumer;
 import fr.xebia.xebay.api.socket.BidEngineSocketCoder;
 import fr.xebia.xebay.api.socket.BidEngineSocketOutput;
 import fr.xebia.xebay.domain.BidOffer;
@@ -8,7 +9,6 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.function.Consumer;
 
 @ClientEndpoint(encoders = {BidEngineSocketCoder.class}, decoders = {BidEngineSocketCoder.class})
 public class AsyncClient {
