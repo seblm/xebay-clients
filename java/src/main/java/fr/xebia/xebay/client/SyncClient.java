@@ -23,8 +23,8 @@ public class SyncClient {
     private final Client client;
     private final String target;
 
-    public SyncClient(String target) {
-        this.target = target;
+    public SyncClient(String hostAndPort) {
+        this.target = "http://" + hostAndPort + "/rest";
         this.client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
     }
 

@@ -17,8 +17,8 @@ public class AsyncClient {
     private Consumer<BidOffer> newBidOfferCallback;
     private Consumer<String> infoCallback;
 
-    public AsyncClient(String endpoint) throws IOException, DeploymentException, URISyntaxException {
-        URI endpointURI = new URI(endpoint);
+    public AsyncClient(String hostAndPort, String apiKey) throws IOException, DeploymentException, URISyntaxException {
+        URI endpointURI = new URI("ws://" + hostAndPort + "/socket/bidEngine/" + apiKey);
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         session = container.connectToServer(this, endpointURI);
     }
