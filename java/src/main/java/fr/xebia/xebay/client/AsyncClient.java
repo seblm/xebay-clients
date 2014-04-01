@@ -11,13 +11,13 @@ import java.net.URISyntaxException;
 import java.util.function.Consumer;
 
 @ClientEndpoint(encoders = {BidEngineSocketCoder.class}, decoders = {BidEngineSocketCoder.class})
-public class WebSocketBidder {
+public class AsyncClient {
 
     final Session session;
     private Consumer<BidOffer> newBidOfferCallback;
     private Consumer<String> infoCallback;
 
-    public WebSocketBidder(String endpoint) throws IOException, DeploymentException, URISyntaxException {
+    public AsyncClient(String endpoint) throws IOException, DeploymentException, URISyntaxException {
         URI endpointURI = new URI(endpoint);
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         session = container.connectToServer(this, endpointURI);

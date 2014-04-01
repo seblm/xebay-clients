@@ -17,13 +17,13 @@ import java.util.Set;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
-public class RestBidder {
-    private static final Logger log = LoggerFactory.getLogger(RestBidder.class);
+public class SyncClient {
+    private static final Logger log = LoggerFactory.getLogger(SyncClient.class);
 
     private final Client client;
     private final String target;
 
-    public RestBidder(String target) {
+    public SyncClient(String target) {
         this.target = target;
         this.client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
     }
