@@ -4,6 +4,7 @@ import fr.xebia.xebay.Consumer;
 import fr.xebia.xebay.api.socket.BidEngineSocketCoder;
 import fr.xebia.xebay.api.socket.BidEngineSocketOutput;
 import fr.xebia.xebay.domain.BidOffer;
+import fr.xebia.xebay.domain.PluginInfo;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class AsyncClient {
 
     final Session session;
     private Consumer<BidOffer> newBidOfferCallback;
-    private Consumer<String> infoCallback;
+    private Consumer<PluginInfo> pluginInfoCallback;
 
     public AsyncClient(String hostAndPort, String apiKey) throws IOException, DeploymentException, URISyntaxException {
         URI endpointURI = new URI("ws://" + hostAndPort + "/socket/bidEngine/" + apiKey);
@@ -32,8 +33,8 @@ public class AsyncClient {
         if (newBidOfferCallback != null && message.getBidOffer() != null) {
             newBidOfferCallback.accept(message.getBidOffer());
         }
-        if (infoCallback != null && message.getInfo() != null) {
-            infoCallback.accept(message.getInfo());
+        if (pluginInfoCallback != null && message.getNews() != null) {
+            pluginInfoCallback.accept(message.getNews());
         }
     }
 
@@ -46,7 +47,7 @@ public class AsyncClient {
         this.newBidOfferCallback = newBidOfferCallback;
     }
 
-    public void onInfo(Consumer<String> infoCallback) {
-        this.infoCallback = infoCallback;
+    public void onPluginInfo(Consumer<PluginInfo> pluginInfoCallback) {
+        this.pluginInfoCallback = pluginInfoCallback;
     }
 }

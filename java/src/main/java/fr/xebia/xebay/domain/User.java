@@ -7,6 +7,7 @@ public class User {
     private String key;
     private double balance;
     private Set<Item> items;
+    private boolean mailed;
 
     public User(String name, String key, double balance, Set<Item> items) {
         this.name = name;
@@ -34,18 +35,17 @@ public class User {
         return items;
     }
 
+    public boolean isMailed() {
+        return mailed;
+    }
+
+    public void setMailed(boolean mailed) {
+        this.mailed = mailed;
+    }
+
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Item item : items) {
-            stringBuilder.append(item.toString());
-        }
-        return "User{" +
-                "name='" + name + '\'' +
-                ", key='" + key + '\'' +
-                ", balance=" + balance +
-                ", items=" + stringBuilder.toString() +
-                '}';
+        return "Name " + name + " Balance " + balance;
     }
 
 }
